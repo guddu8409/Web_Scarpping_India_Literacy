@@ -11,27 +11,19 @@ def index():
 
 @app.route('/run-script', methods=['POST'])
 def run_script():
+    # Run the scraping script
+    subprocess.run(['python', 'scrape_literacy_in_india.py'])
+
+    # Read CSV content
     data = []
-    headers = []
-    try:
-        # Run the external script
-        subprocess.run(['python', 'scrape_literacy_in_india.py'], check=True)
-
-        # Ensure the CSV exists before reading
-        csv_path = 'literacy_in_india.csv'
-        if not os.path.exists(csv_path):
-            raise FileNotFoundError(f"{csv_path} not found.")
-
-        # Read CSV content
-        with open(csv_path, newline='', encoding='utf-8') as csvfile:
-            reader = csv.reader(csvfile)
-            headers = next(reader)
-            for row in reader:
-                data.append(row)
-    except Exception as e:
-        return render_template('index.html', data=None, headers=None, error=str(e))
+    with open('literacy_in_india.csv', newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        headers = next(reader)
+        for row in reader:
+            data.append(row)
 
     return render_template('index.html', data=data, headers=headers)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Bind the app to 0.0.0.0 to allow external access, and use the dynamic port
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)), debug=True)
