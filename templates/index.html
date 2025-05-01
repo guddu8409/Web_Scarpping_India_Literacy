@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Literacy in India</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='Style.css') }}">
+</head>
+<body>
+    <h1>Literacy Data Scraper</h1>
+    <form action="/run-script" method="post">
+        <button type="submit">Run Scraper</button>
+    </form>
+
+    {% if data %}
+        <h2>Scraped Data</h2>
+        <table border="1">
+            <tr>
+                {% for head in headers %}
+                    <th>{{ head }}</th>
+                {% endfor %}
+            </tr>
+            {% for row in data %}
+                <tr>
+                    {% for cell in row %}
+                        <td>{{ cell }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+</html>
